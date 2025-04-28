@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import CompareCard from "@/components/CompareCard";
-import {userSourceTargetState, useSourceTargetDispatch, useSourceTargetState} from "@/context/SourceTargetContext";
+import {useSourceTargetDispatch, useSourceTargetState} from "@/context/SourceTargetContext";
 import TokenButton from "@/components/TokenButton";
 import {Token} from "@/types/tokenTypes";
 import {tokenList} from "../../constants/tokens";
@@ -38,8 +38,6 @@ export default function TokenCompare() {
                 <p className='text-center italic'>Select source and target token.</p>
             </div>
 
-            <PriceInput />
-
             {/*TokenTypes buttons*/}
             <div className={'w-full flex gap-x-4 items-center items-center justify-center mb-4'}>
                 {
@@ -48,6 +46,8 @@ export default function TokenCompare() {
                     ))
                 }
             </div>
+
+            <PriceInput />
 
             {/*TokenTypes compare*/}
             <div className='flex items-center justify-center w-full gap-x-4'>

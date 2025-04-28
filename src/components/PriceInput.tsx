@@ -1,12 +1,14 @@
+'use client';
+
 const PriceInput = () => {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log('submitted');
+        console.log('submitted', event.target[0].value);
     }
 
     return (
-        <div className='w-auto flex items-center justify-center mb-4 border rounded-lg border-black/25'>
+        <div className='px-4 flex items-center justify-center mb-4 border rounded-lg border-black/25'>
             <form onSubmit={handleSubmit}>
                 <label htmlFor='priceInput' className='mr-[3px]'>Enter amount (USD): $</label>
                 <input

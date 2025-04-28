@@ -8,6 +8,8 @@ export async function GET(request: NextRequest) {
         const chainId: string = request.headers.get('chainId') || '';
         const symbol: string = request.headers.get('symbol') || '';
 
+        console.log('logging headers on server: ', chainId, symbol);
+
         const data = await getAssetErc20ByChainAndSymbol({
                 chainId: chainId,
                 symbol: symbol,

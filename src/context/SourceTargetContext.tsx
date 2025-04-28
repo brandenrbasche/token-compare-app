@@ -1,6 +1,5 @@
 import React, { createContext, useReducer, useContext, Dispatch, ReactNode } from 'react';
 import {Token} from "@/types/tokenTypes";
-import {Source} from "postcss";
 
 interface SourceTargetState {
     sourceSelection: Token | null;
@@ -23,6 +22,7 @@ function sourceTargetReducer(state: SourceTargetState, action: Action): SourceTa
     switch (action.type) {
         case 'SELECT_TOKEN': {
             const { token } = action.payload;
+
             if (state.nextClickSets === 'source') {
                 return {
                     ...state,
