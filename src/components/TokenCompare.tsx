@@ -8,23 +8,11 @@ import {Token} from "@/types/tokenTypes";
 import {tokenList} from "../../constants/tokens";
 import PriceInput from "@/components/PriceInput";
 
-// interface SourceTargetSelectorProps {
-//     items: Token[];
-// }
-//
-// interface TokenData {
-//     address: string;
-//     chain: string;
-//     decimals: number;
-//     symbol: string;
-// }
-
 export default function TokenCompare() {
     const { sourceSelection, targetSelection } = useSourceTargetState();
     const dispatch = useSourceTargetDispatch();
 
     const handleTokenClick = (token: Token) => {
-        console.log('token', token);
         dispatch({
             type: 'SELECT_TOKEN',
             payload: { token }
@@ -54,6 +42,8 @@ export default function TokenCompare() {
                 <CompareCard type={'Source'} token={sourceSelection || null} />
                 <CompareCard type={'Target'} token={targetSelection || null} />
             </div>
+
+
         </div>
     );
 }
