@@ -1,14 +1,34 @@
 'use client';
+import { useRef, useState, useEffect } from 'react';
+import { useSourceTargetDispatch, useSourceTargetState } from '@/context/SourceTargetContext';
 
 const PriceInput = () => {
+    const { priceUsdInput } = useSourceTargetState();
+    const dispatch = useSourceTargetDispatch();
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [localValue, setLocalValue] = useState(priceUsdInput);
+    
+    // Sync local state with context when priceUsdInput changes (e.g., on reset)
+    useEffect(() => {
+        setLocalValue(priceUsdInput);
+    }, [priceUsdInput]);
 
-    const handleSubmit = async (event: React.FormEvent) => {
+    // Handle local state change without updating global context
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLocalValue(e.target.value);
+    };
+
+    // Only update global state on form submission (Enter key)
+    const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        console.log('submitted', event.target[0].value);
-    }
+        dispatch({
+            type: 'SET_PRICE_USD_INPUT',
+            payload: { value: localValue }
+        });
+    };
 
     return (
-        <div className='px-4 flex items-center justify-center mb-4 border rounded-lg border-black/25'>
+        <div className='p-4 flex items-center justify-center mb-4 border rounded-lg border-black/25'>
             <form onSubmit={handleSubmit}>
                 <label htmlFor='priceInput' className='mr-[3px]'>Enter amount (USD): $</label>
                 <input
@@ -16,15 +36,20 @@ const PriceInput = () => {
                     type='number'
                     id='priceInput'
                     placeholder='0.0'
+                    value={localValue}
+                    onChange={handleChange}
+                    ref={inputRef}
                     required
                 />
                 <button
-                    className='cursor-pointer inline-flex items-center justify-center rounded-md px-4 py-2 underline'
-                >Calculate (press enter)
+                    type="submit"
+                    className='cursor-pointer inline-flex items-center justify-center rounded-md px-4 py-2 text-blue-500 hover:text-blue-700'
+                >
+                    Calculate (or press enter)
                 </button>
             </form>
         </div>
-    )
-}
+    );
+};
 
 export default PriceInput;

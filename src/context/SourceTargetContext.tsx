@@ -7,6 +7,7 @@ interface SourceTargetState {
     nextClickSets: 'source' | 'target';
     sourceData: TokenData | null;
     targetData: TokenData | null;
+    priceUsdInput: string;
 }
 
 const initialState: SourceTargetState = {
@@ -14,7 +15,8 @@ const initialState: SourceTargetState = {
     targetSelection: null,
     nextClickSets: 'source',
     sourceData: null,
-    targetData: null
+    targetData: null,
+    priceUsdInput: ''
 }
 
 // action definition
@@ -23,7 +25,9 @@ type Action =
     | { type: 'SET_TOKEN_LOADING', payload: { tokenType: 'source' | 'target' }}
     | { type: 'SET_TOKEN_ASSET_DATA', payload: { tokenType: 'source' | 'target', data: AssetData }}
     | { type: 'SET_TOKEN_PRICE_DATA', payload: { tokenType: 'source' | 'target', data: PriceData }}
-    | { type: 'SET_TOKEN_ERROR', payload: { tokenType: 'source' | 'target', error: string }};
+    | { type: 'SET_TOKEN_ERROR', payload: { tokenType: 'source' | 'target', error: string }}
+    | { type: 'SET_PRICE_USD_INPUT', payload: { value: string }}
+    | { type: 'RESET_STATE' };
 // TODO: add more actions later (ex/ reset selections)
 
 /* Reducer Function: */
@@ -104,6 +108,16 @@ function sourceTargetReducer(state: SourceTargetState, action: Action): SourceTa
                 };
             }
         }
+        case 'SET_PRICE_USD_INPUT': {
+            const { value } = action.payload;
+            return {
+                ...state,
+                priceUsdInput: value
+            };
+        }
+        case 'RESET_STATE': {
+            return initialState;
+        }
         default: {
             return state;
         }
@@ -120,11 +134,11 @@ interface SourceTargetContextProps {
 const SourceTargetContext = createContext<SourceTargetContextProps | undefined>(undefined);
 
 // Provider:
-interface SourceTargetProvderProps {
+interface SourceTargetProviderProps {
     children: ReactNode;
 }
 
-export function SourceTargetProvider({ children }: SourceTargetProvderProps) {
+export function SourceTargetProvider({ children }: SourceTargetProviderProps) {
     const [state, dispatch] = useReducer(sourceTargetReducer, initialState);
     
     // Function to fetch data for a token
