@@ -1,11 +1,11 @@
 'use client';
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useSourceTargetState, useTokenData} from "@/context/SourceTargetContext";
 import {Token} from "@/types/tokenTypes";
 
 interface CompareCardProps {
     type: 'Source' | 'Target';
-    token: Token;
+    token: Token | null;
 }
 
 const CompareCard = ({ type, token }: CompareCardProps) => {
@@ -15,9 +15,9 @@ const CompareCard = ({ type, token }: CompareCardProps) => {
     // Get both source and target data regardless of which card this is
     const { sourceData, targetData, priceUsdInput } = useSourceTargetState();
     
-    let usdToSourceAmount: number = 0; // how much source token USD amount buys
-    let usdToTargetAmount: number = 0; // how much target token USD amount buys
-    let sourceToTargetAmount: number = 0; // how much target token the specific amountSource would swap for
+    // let usdToSourceAmount: number = 0; // how much source token USD amount buys
+    // let usdToTargetAmount: number = 0; // how much target token USD amount buys
+    // let sourceToTargetAmount: number = 0; // how much target token the specific amountSource would swap for
 
     const {assetData, priceData, isLoading, error} = tokenData || {};
     
@@ -29,18 +29,18 @@ const CompareCard = ({ type, token }: CompareCardProps) => {
             const parsedUsd = parseFloat(priceUsdInput);
             if (isNaN(parsedUsd)) return;
             
-            // Calculations specific to source card
-            if (tokenType === 'source' && sourceData?.priceData) {
-                // calculate how much source token the USD amount buys
-                usdToSourceAmount = parsedUsd / sourceData.priceData.unitPrice;
-            }
-            
-            // Calculations specific to target card
-            if (tokenType === 'target' && sourceData?.priceData && targetData?.priceData) {
-                usdToTargetAmount = parsedUsd / targetData.priceData.unitPrice;
-                // calculate target token amount based on source token amount and price ratios
-                sourceToTargetAmount = usdToSourceAmount * (sourceData.priceData.unitPrice / targetData.priceData.unitPrice);
-            }
+            // // Calculations specific to source card
+            // if (tokenType === 'source' && sourceData?.priceData) {
+            //     // calculate how much source token the USD amount buys
+            //     usdToSourceAmount = parsedUsd / sourceData.priceData.unitPrice;
+            // }
+            //
+            // // Calculations specific to target card
+            // if (tokenType === 'target' && sourceData?.priceData && targetData?.priceData) {
+            //     usdToTargetAmount = parsedUsd / targetData.priceData.unitPrice;
+            //     // calculate target token amount based on source token amount and price ratios
+            //     // sourceToTargetAmount = usdToSourceAmount * (sourceData.priceData.unitPrice / targetData.priceData.unitPrice);
+            // }
 
         } catch (error) {
             console.error('Error in price calculation:', error);
@@ -83,6 +83,7 @@ const CompareCard = ({ type, token }: CompareCardProps) => {
             {tokenType === 'source' && priceUsdInput && sourceData?.priceData && (
                 <div className='text-left w-full text-xl'>
                     <p><strong>Amount of {sourceData.assetData?.symbol} for ${priceUsdInput}: </strong> { (parseFloat(priceUsdInput) / sourceData.priceData.unitPrice).toFixed(6)}</p>
+                    {/*<p><strong>Amount of {sourceData.assetData?.symbol} for ${priceUsdInput}: </strong> {usdToSourceAmount.toFixed(6)}</p>*/}
                 </div>
             )}
             
@@ -92,8 +93,6 @@ const CompareCard = ({ type, token }: CompareCardProps) => {
                     <p><strong>Amount of {targetData.assetData?.symbol} for
                         ${priceUsdInput}: </strong> {(parseFloat(priceUsdInput) / targetData.priceData.unitPrice).toFixed(6)}
                     </p>
-                    {/*<p><strong>Amount of {targetData.assetData?.symbol} after swap: </strong>*/}
-                    {/*{(parseFloat(priceUsdInput) / sourceData.priceData.unitPrice * (sourceData.priceData.unitPrice / targetData.priceData.unitPrice)).toFixed(6)}</p>*/}
                 </div>
             )}
         </div>

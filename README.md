@@ -1,5 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+# Token Price Explorer (Take-Home Assessment)
+## Overview
+
+This application allows users to explore potential token swaps by selecting a source and target cryptocurrency token, inputting a USD amount, and seeing the approximate equivalent amounts in those tokens based on current market prices.
+
+The core functionality involves fetching token data and pricing information from the `@funkit/api-base` api and performs calculations to simulate a swap from an inputted USD value.
+## Features
+
+- Token selection (select between USDC, USDT, ETH, and WBTC as source and target tokens)
+- Price conversion (view toke ndata across multiple blockchains)
+
+
+## Tech Stack
+
+**Client:** React (TypeScript), NextJS, TailwindCSS
+
+**API Integration:** FunKit API for blockchain data
+
+**State Management**: React Context API with reducers
+
+## Usage
+
+1. Select a source token from the available options
+2. Select a target token for comparison
+3. Enter a USD amount in the input field
+4. View detailed token information and conversion rates
+5. Use the reset button to start a new comparison
 ## Getting Started
 
 First, run the development server:
@@ -14,23 +40,38 @@ pnpm dev
 bun dev
 ```
 
+
+## Environment Setup
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`FUNKIT_API_KEY=Z9SZaOwpmE40KX61mUKWm5hrpGh7WHVkaTvQJpQk`
+
+## Installation
+
+Clone the repository
+
+```bash
+ git clone https://github.com/brandenrbasche/token-compare-app
+ cd token-compare-app
+```
+
+Install dependences
+```bash
+npm install
+```
+
+Start development server
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+## Build for Production
+
+```bash
+npm run build
+npm run start
+```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

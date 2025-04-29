@@ -7,7 +7,6 @@ import TokenButton from "@/components/TokenButton";
 import {Token} from "@/types/tokenTypes";
 import {tokenList} from "../../constants/tokens";
 import PriceInput from "@/components/PriceInput";
-import TokenSwapSummary from "@/components/TokenSwapSummary";
 
 export default function TokenCompare() {
     const { sourceSelection, targetSelection } = useSourceTargetState();
@@ -42,7 +41,7 @@ export default function TokenCompare() {
                         </button>
                     </div>
                 </div>
-                <p className='text-center italic'>Select tokens and enter price to begin.</p>
+                <p className='text-center italic'>Select tokens and enter price to compare tokens.</p>
             </div>
 
             {/*TokenTypes buttons*/}
@@ -62,9 +61,6 @@ export default function TokenCompare() {
                 <CompareCard type={'Source'} token={sourceSelection}/>
                 <CompareCard type={'Target'} token={targetSelection}/>
             </div>
-
-            {/*Swap summary info: */}
-            <TokenSwapSummary />
         </div>
     );
 }
