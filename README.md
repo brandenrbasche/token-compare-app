@@ -8,7 +8,7 @@ The core functionality involves fetching token data and pricing information from
 ## Features
 
 - Token selection (select between USDC, USDT, ETH, and WBTC as source and target tokens)
-- Price conversion (view toke ndata across multiple blockchains)
+- Price conversion (view token data across multiple blockchains)
 
 
 ## Tech Stack
