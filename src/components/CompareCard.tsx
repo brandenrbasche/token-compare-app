@@ -23,29 +23,29 @@ const CompareCard = ({ type, token }: CompareCardProps) => {
     
     // Calculation effect when price input changes
     useEffect(() => {
+        // Only run calculations if we have valid data
         if (!priceUsdInput) return;
+        if (tokenType === 'source' && (!sourceData?.priceData)) return;
+        if (tokenType === 'target' && (!targetData?.priceData || !sourceData?.priceData)) return;
         
         try {
             const parsedUsd = parseFloat(priceUsdInput);
             if (isNaN(parsedUsd)) return;
             
-            // // Calculations specific to source card
-            // if (tokenType === 'source' && sourceData?.priceData) {
-            //     // calculate how much source token the USD amount buys
-            //     usdToSourceAmount = parsedUsd / sourceData.priceData.unitPrice;
-            // }
-            //
-            // // Calculations specific to target card
-            // if (tokenType === 'target' && sourceData?.priceData && targetData?.priceData) {
-            //     usdToTargetAmount = parsedUsd / targetData.priceData.unitPrice;
-            //     // calculate target token amount based on source token amount and price ratios
-            //     // sourceToTargetAmount = usdToSourceAmount * (sourceData.priceData.unitPrice / targetData.priceData.unitPrice);
-            // }
+            // Removed commented-out calculation code to prevent any potential issues
+            // All active calculations are now done directly in the JSX render
 
         } catch (error) {
             console.error('Error in price calculation:', error);
         }
-    }, [priceUsdInput, sourceData, targetData, tokenType]);
+    }, [
+        priceUsdInput, 
+        tokenType,
+        sourceData?.priceData,
+        targetData?.priceData
+        // sourceData?.priceData?.unitPrice,
+        // targetData?.priceData?.unitPrice
+    ]);
 
     return (
         <div className='w-full h-full flex flex-col items-center justify-center border rounded-lg p-4'>

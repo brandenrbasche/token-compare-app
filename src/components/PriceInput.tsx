@@ -15,16 +15,24 @@ const PriceInput = () => {
 
     // Handle local state change without updating global context
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLocalValue(e.target.value);
+        // Validate input to prevent potential issues with invalid values
+        const value = e.target.value;
+        if (value === '' || !isNaN(parseFloat(value))) {
+            setLocalValue(value);
+        }
     };
 
     // Only update global state on form submission (Enter key)
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        dispatch({
-            type: 'SET_PRICE_USD_INPUT',
-            payload: { value: localValue }
-        });
+        // Validate before dispatching
+        const trimmedValue = localValue.trim();
+        if (trimmedValue === '' || !isNaN(parseFloat(trimmedValue))) {
+            dispatch({
+                type: 'SET_PRICE_USD_INPUT',
+                payload: { value: trimmedValue }
+            });
+        }
     };
 
     return (

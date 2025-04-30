@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useContext, Dispatch, ReactNode, useEffect } from 'react';
+import React, { createContext, useReducer, useContext, Dispatch, ReactNode, useEffect, useCallback } from 'react';
 import {Token, TokenData, AssetData, PriceData} from "@/types/tokenTypes";
 
 interface SourceTargetState {
@@ -142,15 +142,15 @@ export function SourceTargetProvider({ children }: SourceTargetProviderProps) {
     const [state, dispatch] = useReducer(sourceTargetReducer, initialState);
     
     // Function to fetch data for a token
-    const fetchTokenData = async (token: Token, type: 'source' | 'target') => {
+    const fetchTokenData = useCallback(async (token: Token, type: 'source' | 'target') => {
         if (!token) return;
-        
+
         // Set loading state
         dispatch({
             type: 'SET_TOKEN_LOADING',
             payload: { tokenType: type }
         });
-        
+
         try {
             // First fetch: Get asset data
             const assetResponse = await fetch('/api/getAssetErc20ByChainAndSymbol', {
@@ -159,16 +159,21 @@ export function SourceTargetProvider({ children }: SourceTargetProviderProps) {
                     symbol: token.tokenName,
                 }
             });
-            
+
             if (!assetResponse.ok) throw new Error('Failed to fetch asset data');
-            
+
             const assetData = await assetResponse.json();
             
+            // Check if component is still mounted/relevant before updating state
+            if (!assetData || !assetData.address) {
+                throw new Error('Invalid asset data received');
+            }
+
             dispatch({
                 type: 'SET_TOKEN_ASSET_DATA',
                 payload: { tokenType: type, data: assetData }
             });
-            
+
             // Second fetch: Get price data using the asset data
             const priceResponse = await fetch('/api/getAssetPriceInfo', {
                 headers: {
@@ -176,40 +181,103 @@ export function SourceTargetProvider({ children }: SourceTargetProviderProps) {
                     assetTokenAddress: assetData.address,
                 }
             });
-            
+
             if (!priceResponse.ok) throw new Error('Failed to fetch price data');
-            
+
             const priceData = await priceResponse.json();
             
+            // Validate price data before updating state
+            if (!priceData) {
+                throw new Error('Invalid price data received');
+            }
+
             dispatch({
                 type: 'SET_TOKEN_PRICE_DATA',
                 payload: { tokenType: type, data: priceData }
             });
-            
+
         } catch (error) {
             console.error(`Error fetching ${type} token data:`, error);
             dispatch({
                 type: 'SET_TOKEN_ERROR',
-                payload: { 
-                    tokenType: type, 
-                    error: error instanceof Error ? error.message : 'Unknown error' 
+                payload: {
+                    tokenType: type,
+                    error: error instanceof Error ? error.message : 'Unknown error'
                 }
             });
+            
+            // Prevent further processing on error - this is important to stop cascading failures
+            return;
         }
-    };
+    }, []);
+    // const fetchTokenData = async (token: Token, type: 'source' | 'target') => {
+    //     if (!token) return;
+    //
+    //     // Set loading state
+    //     dispatch({
+    //         type: 'SET_TOKEN_LOADING',
+    //         payload: { tokenType: type }
+    //     });
+    //
+    //     try {
+    //         // First fetch: Get asset data
+    //         const assetResponse = await fetch('/api/getAssetErc20ByChainAndSymbol', {
+    //             headers: {
+    //                 chainId: token.chainId,
+    //                 symbol: token.tokenName,
+    //             }
+    //         });
+    //
+    //         if (!assetResponse.ok) throw new Error('Failed to fetch asset data');
+    //
+    //         const assetData = await assetResponse.json();
+    //
+    //         dispatch({
+    //             type: 'SET_TOKEN_ASSET_DATA',
+    //             payload: { tokenType: type, data: assetData }
+    //         });
+    //
+    //         // Second fetch: Get price data using the asset data
+    //         const priceResponse = await fetch('/api/getAssetPriceInfo', {
+    //             headers: {
+    //                 chainId: token.chainId,
+    //                 assetTokenAddress: assetData.address,
+    //             }
+    //         });
+    //
+    //         if (!priceResponse.ok) throw new Error('Failed to fetch price data');
+    //
+    //         const priceData = await priceResponse.json();
+    //
+    //         dispatch({
+    //             type: 'SET_TOKEN_PRICE_DATA',
+    //             payload: { tokenType: type, data: priceData }
+    //         });
+    //
+    //     } catch (error) {
+    //         console.error(`Error fetching ${type} token data:`, error);
+    //         dispatch({
+    //             type: 'SET_TOKEN_ERROR',
+    //             payload: {
+    //                 tokenType: type,
+    //                 error: error instanceof Error ? error.message : 'Unknown error'
+    //             }
+    //         });
+    //     }
+    // };
     
     // Auto-fetch data when tokens are selected
     useEffect(() => {
         if (state.sourceSelection) {
             fetchTokenData(state.sourceSelection, 'source');
         }
-    }, [state.sourceSelection]);
+    }, [state.sourceSelection, fetchTokenData]);
     
     useEffect(() => {
         if (state.targetSelection) {
             fetchTokenData(state.targetSelection, 'target');
         }
-    }, [state.targetSelection]);
+    }, [state.targetSelection, fetchTokenData]);
     
     const value = { state, dispatch, fetchTokenData };
 
